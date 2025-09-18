@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>你是《無所畏懼》中的誰？角色人格測驗</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .quiz-container {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+        }
+        .question-text {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            font-weight: 700;
+        }
+        .answer-option {
+            background-color: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .answer-option:hover {
+            background-color: #e5e7eb;
+        }
+        .answer-option.active {
+            background-color: #d1fae5;
+            border-color: #34d399;
+        }
+        .result-container {
+            text-align: center;
+        }
+        .result-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 9999px;
+            border: 4px solid #34d399;
+        }
+        .result-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #065f46;
+        }
+        .result-description {
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+            color: #4b5563;
+        }
+        .btn-primary {
+            background-color: #34d399;
+            color: #ffffff;
+            font-weight: 700;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #10b981;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-6">
+
+    <div id="quiz-app" class="container mx-auto p-8 rounded-3xl shadow-xl bg-white space-y-8 max-w-2xl">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800">你是《無所畏懼》中的誰？</h1>
+        <p class="text-center text-lg text-gray-600">這不是考試，請依據你的直覺選擇最符合你的選項，找出與你最相似的角色！</p>
+        
+        <div id="quiz-body" class="space-y-6">
+            <!-- Questions will be injected here by JavaScript -->
+        </div>
+
+        <div id="quiz-result" class="hidden text-center space-y-6">
+            <!-- Result will be injected here by JavaScript -->
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const quizData = {
+                questions: [
+                    {
+                        question: "你如何看待生活中的小幸運？",
+                        answerOptions: [
+                            { text: "這是我努力得來的，值得慶祝！", value: "A" },
+                            { text: "只是一時的好運，我不會太當真。", value: "B" },
+                            { text: "我會好好把握，並讓它成為我未來的資產。", value: "C" },
+                            { text: "感恩，並希望把這份幸運分享給身邊的人。", value: "D" }
+                        ]
+                    },
+                    {
+                        question: "面對他人的批評，你會？",
+                        answerOptions: [
+                            { text: "感到憤怒，並立刻反駁，捍衛自己的立場。", value: "A" },
+                            { text: "冷靜分析，從中找出可以改進的地方。", value: "B" },
+                            { text: "不予理會，相信自己才是對的。", value: "C" },
+                            { text: "感到難過，但會默默消化情緒。", value: "D" }
+                        ]
+                    },
+                    {
+                        question: "如果必須與不喜歡的人合作，你的態度會是？",
+                        answerOptions: [
+                            { text: "保持專業，公事公辦，只談工作。", value: "D" },
+                            { text: "盡力溝通，尋找彼此的共通點。", value: "A" },
+                            { text: "避免直接互動，只在必要時才開口。", value: "C" },
+                            { text: "嘗試了解對方，也許會有意外的收穫。", value: "B" }
+                        ]
+                    },
+                    {
+                        question: "面對突如其來的誘惑，你會？",
+                        answerOptions: [
+                            { text: "堅守原則，絕不妥協。", value: "A" },
+                            { text: "先評估風險與回報，再做決定。", value: "B" },
+                            { text: "如果有利可圖，我會考慮嘗試。", value: "C" },
+                            { text: "內心掙扎，但最終還是會拒絕。", value: "D" }
+                        ]
+                    },
+                    {
+                        question: "你如何看待自己的過去？",
+                        answerOptions: [
+                            { text: "過去是讓我成長的養分，我從不後悔。", value: "A" },
+                            { text: "過去已經過去，我只專注於未來。", value: "B" },
+                            { text: "過去的錯誤讓我更謹慎。", value: "C" },
+                            { text: "我會偶爾回顧，從中汲取教訓。", value: "D" }
+                        ]
+                    }
+                ],
+                results: {
+                    A: {
+                        title: "你是羅英子",
+                        description: "一位擁有無比韌性與堅強意志的戰士。你的人生或許曾經一帆風順，但當意外來襲，你不會倒下，反而會把挫折當作燃料，用智慧與勇氣為自己開闢新的人生道路。你堅持正義，無所畏懼，是自己人生的女王。",
+                        image: "https://placehold.co/400x400/34d399/ffffff?text=Luo+Yingzi"
+                    },
+                    B: {
+                        title: "你是陳碩",
+                        description: "一位外表冷酷，實則內心有情有義的策略家。你擅長利用資源與人脈，總能從利益角度做出最理性的判斷。然而，在你的理性背後，藏著對公平與正義的堅持，一旦遇上能與你並肩作戰的夥伴，你會展現出深藏的溫暖。",
+                        image: "https://placehold.co/400x400/34d399/ffffff?text=Chen+Shuo"
+                    },
+                    C: {
+                        title: "你是夏舒",
+                        description: "一位看似單純卻內心複雜的現實主義者。你懂得看清現實，並為自己做出最有利的選擇。你沒有絕對的對錯觀念，因為你明白生存比原則更重要。你的聰明與務實，讓你能在複雜的人際關係中找到自己的位置。",
+                        image: "https://placehold.co/400x400/34d399/ffffff?text=Xia+Shu"
+                    },
+                    D: {
+                        title: "你是邱華",
+                        description: "一位理性、專業且獨立的職場女強人。你相信專業能力是安身立命的根本，將事業視為人生的重要部分。你為人冷靜，善於分析，但在情感世界中，或許需要學會如何表達與溝通，才能讓自己的人生更圓滿。",
+                        image: "https://placehold.co/400x400/34d399/ffffff?text=Qiu+Hua"
+                    }
+                }
+            };
+
+            const quizBody = document.getElementById('quiz-body');
+            const quizResult = document.getElementById('quiz-result');
+            let currentQuestionIndex = 0;
+            const scores = { A: 0, B: 0, C: 0, D: 0 };
+            
+            function renderQuestion() {
+                if (currentQuestionIndex >= quizData.questions.length) {
+                    renderResult();
+                    return;
+                }
+                const q = quizData.questions[currentQuestionIndex];
+                quizBody.innerHTML = `
+                    <div class="question-text">${currentQuestionIndex + 1}. ${q.question}</div>
+                    <div class="space-y-4 mt-6">
+                        ${q.answerOptions.map(option => `
+                            <div class="answer-option cursor-pointer rounded-xl p-4 transition-colors duration-200 ease-in-out hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-400" data-value="${option.value}">
+                                <p class="text-base sm:text-lg text-gray-700">${option.text}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                document.querySelectorAll('.answer-option').forEach(option => {
+                    option.addEventListener('click', handleAnswerClick);
+                });
+            }
+
+            function handleAnswerClick(event) {
+                const selectedValue = event.currentTarget.dataset.value;
+                scores[selectedValue]++;
+                currentQuestionIndex++;
+                renderQuestion();
+            }
+
+            function renderResult() {
+                quizBody.classList.add('hidden');
+                quizResult.classList.remove('hidden');
+
+                let maxScore = 0;
+                let resultValue = '';
+                for (const key in scores) {
+                    if (scores[key] > maxScore) {
+                        maxScore = scores[key];
+                        resultValue = key;
+                    }
+                }
+                
+                const result = quizData.results[resultValue] || {
+                    title: "你的性格很複雜",
+                    description: "你的答案平均分佈，代表你的性格更為複雜，同時具備多種角色的特質，無法被單一角色定義。",
+                    image: "https://placehold.co/400x400/34d399/ffffff?text=Complex+Character"
+                };
+
+                quizResult.innerHTML = `
+                    <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-800">測驗結果</h2>
+                    <img src="${result.image}" alt="角色圖片" class="mx-auto rounded-full shadow-md mb-4 w-48 h-48 sm:w-64 sm:h-64 object-cover border-4 border-green-500">
+                    <h3 class="text-2xl font-bold text-green-700 mb-2">${result.title}</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">${result.description}</p>
+                    <button id="share-btn" class="mt-8 btn-primary">截圖分享</button>
+                `;
+                
+                const shareButton = document.getElementById('share-btn');
+                if (shareButton) {
+                    shareButton.addEventListener('click', () => {
+                        // Import html2canvas library on the fly
+                        const script = document.createElement('script');
+                        script.src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js";
+                        script.onload = () => {
+                            html2canvas(document.getElementById('quiz-result'), {
+                                // Scale up for higher resolution
+                                scale: 2,
+                                // Prevent scrollbars from appearing in the screenshot
+                                windowWidth: document.documentElement.scrollWidth,
+                                windowHeight: document.documentElement.scrollHeight
+                            }).then(canvas => {
+                                const image = canvas.toDataURL('image/png', 1.0);
+                                const link = document.createElement('a');
+                                link.download = '無所畏懼-角色測驗結果.png';
+                                link.href = image;
+                                link.click();
+                            }).catch(err => {
+                                console.error('截圖失敗:', err);
+                            });
+                        };
+                        document.head.appendChild(script);
+                    });
+                }
+            }
+
+            renderQuestion();
+        });
+    </script>
+</body>
+</html>
