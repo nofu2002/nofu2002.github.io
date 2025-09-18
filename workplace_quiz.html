@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>你是辦公室哪種同事？</title>
+
+    <!-- Open Graph Meta Tags for Social Sharing -->
+    <meta property="og:title" content="你是辦公室哪種同事？《無所畏懼》職場人設測驗">
+    <meta property="og:description" content="你是羅英子、邱華，還是腹黑心機的方麗紅？點擊測驗，看你的職場人設像《無所畏懼》裡的哪位狠角色！">
+    <meta property="og:image" content="https://placehold.co/1200x630/28558a/ffffff?text=%E8%81%B7%E5%A0%B4%E4%BA%BA%E8%A8%AD%E6%B8%AC%E9%A9%97">
+    <meta property="og:url" content="YOUR_WEBSITE_URL_HERE">
+    <meta property="og:type" content="website">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div id="quiz-container" class="container bg-white rounded-xl shadow-2xl p-8 md:p-12 text-gray-800 transition-all duration-500 transform scale-100">
+        <h1 class="text-3xl md:text-4xl font-bold text-center mb-6 text-gray-900">你是辦公室哪種同事？</h1>
+        <p class="text-center text-lg md:text-xl text-gray-600 mb-10">《無所畏懼》角色人設測驗</p>
+
+        <div id="question-area" class="space-y-6">
+            <!-- Questions will be rendered here -->
+        </div>
+
+        <div id="result-area" class="hidden text-center">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4">你的職場人設是：</h2>
+            <div id="result-card" class="bg-blue-50 p-6 rounded-lg shadow-lg">
+                <p id="result-name" class="text-4xl md:text-5xl font-extrabold text-blue-700 mb-4"></p>
+                <p id="result-description" class="text-lg md:text-xl text-gray-700"></p>
+            </div>
+            <div class="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <button id="restart-button" class="px-6 py-3 bg-gray-600 text-white font-semibold rounded-full hover:bg-gray-700 transition-colors duration-300">重新測驗</button>
+                <button id="share-button" class="px-6 py-3 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-colors duration-300">複製結果</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 定義測驗問題與選項，每個選項都有對應的分數
+        const quizData = [
+            {
+                question: "當團隊有新專案，但負責人是個老油條，你會怎麼做？",
+                options: [
+                    { text: "默默承擔大部分工作，讓專案順利推進。", score: { "羅英子": 2, "邱華": 3, "夏舒": 1 } },
+                    { text: "先觀望，看誰會出頭，再決定要不要出手。", score: { "陳碩": 3, "韓之通": 2 } },
+                    { text: "主動去跟老闆討論，看如何分工會更有效率。", score: { "羅英子": 3, "陳碩": 2 } },
+                    { text: "向同事打探消息，並在背後抱怨負責人。", score: { "韓之通": 3, "方麗紅": 2 } }
+                ]
+            },
+            {
+                question: "老闆指派一個你不熟悉的任務，你會？",
+                options: [
+                    { text: "硬著頭皮接下，邊做邊學，並私下請教前輩。", score: { "羅英子": 3, "邱華": 2 } },
+                    { text: "先上網查資料，然後找機會跟老闆說這任務難度高。", score: { "陳碩": 2, "韓之通": 3 } },
+                    { text: "直接跟老闆說我不會，請他換人或給更明確的指示。", score: { "夏舒": 3, "方麗紅": 1 } },
+                    { text: "想辦法把任務轉嫁給其他同事。", score: { "方麗紅": 3, "韓之通": 2 } }
+                ]
+            },
+            {
+                question: "你的同事取得一個重大成就，你會？",
+                options: [
+                    { text: "公開稱讚對方，並私下請教成功的秘訣。", score: { "羅英子": 2, "邱華": 3 } },
+                    { text: "嘴上恭喜，但心裡盤算自己下次如何超越他。", score: { "陳碩": 3 } },
+                    { text: "覺得自己也該表現得更好，壓力很大。", score: { "夏舒": 2 } },
+                    { text: "在其他人面前暗示他的成就其實有水分。", score: { "方麗紅": 3, "韓之通": 2 } }
+                ]
+            },
+            {
+                question: "面對辦公室八卦，你的態度是？",
+                options: [
+                    { text: "不主動參與，保持距離，專注工作。", score: { "羅英子": 3, "邱華": 2 } },
+                    { text: "主動打聽，並將有用的資訊留作未來籌碼。", score: { "陳碩": 3, "方麗紅": 2 } },
+                    { text: "聽一聽，但不輕易表態，事後會跟信任的同事確認真假。", score: { "夏舒": 2 } },
+                    { text: "成為八卦的傳播者，享受被關注的感覺。", score: { "方麗紅": 3, "韓之通": 3 } }
+                ]
+            },
+            {
+                question: "你在專案中犯錯，導致團隊被老闆責罵，你會？",
+                options: [
+                    { text: "立即承認錯誤並提出解決方案。", score: { "羅英子": 3 } },
+                    { text: "想辦法找理由推卸責任，或是拉同事下水。", score: { "韓之通": 3, "方麗紅": 2 } },
+                    { text: "感到很挫折，但會私下跟每個隊友道歉。", score: { "邱華": 3, "夏舒": 2 } },
+                    { text: "嘴上道歉，心裡盤算著下次怎麼把責任轉移。", score: { "陳碩": 3 } }
+                ]
+            }
+        ];
+
+        // 定義每個角色的結果描述
+        const results = {
+            "羅英子": {
+                name: "羅英子",
+                description: "你是辦公室裡的「浴火鳳凰」，理性、堅韌、目標明確。你可能經歷過一些挫折，但你從不退縮，總能迅速掌握局面，在關鍵時刻展現超強的應變能力。你不是天生的強者，但你懂得如何成為強者。大家知道你不好惹，但也知道你是最可靠的戰友。"
+            },
+            "邱華": {
+                name: "邱華",
+                description: "你是辦公室的「暖心小天使」，真誠、善良、學習力強。你可能因為經驗不足而偶爾犯錯，但你總是虛心請教，努力不懈。你把團隊利益放在第一位，是個值得信賴的夥伴。你的成長速度驚人，雖然你不是最聰明的那一個，但你絕對是最努力的那一個。"
+            },
+            "夏舒": {
+                name: "夏舒",
+                description: "你是辦公室的「職場萌新」，單純、直率、帶點天真。你可能不太懂人情世故，容易把事情想得太簡單，但你沒有惡意，也不會耍心機。在職場上，你可能會走些彎路，但因為你的本質善良，最終你會找到屬於自己的位置，並學會成長。"
+            },
+            "陳碩": {
+                name: "陳碩",
+                description: "你是辦公室的「頂級玩家」，聰明、精明、手腕高超。你不按牌理出牌，做事風格充滿個人魅力，總能找到最快的方式達到目的。你對人對事都抱持著目的性，但你無疑是個狠角色，能把不可能的任務變成可能。你讓同事又愛又怕，是個危險又迷人的存在。"
+            },
+            "韓之通": {
+                name: "韓之通",
+                description: "你是辦公室的「資深混子」，表面和善，實則懦弱、自私。你擅長推卸責任、搶奪功勞，永遠把自己的利益放在最前面。你的存在是辦公室毒瘤，讓周圍的人感到不滿。雖然你不一定是最壞的，但你的行為模式總是讓人生厭。"
+            },
+            "方麗紅": {
+                name: "方麗紅",
+                description: "你是辦公室的「腹黑心機女」，表面友好，實則嫉妒心強，擅長背後捅刀。你擅長利用辦公室政治來排除異己，是個危險的對手。你的存在是團隊的隱憂，因為你永遠只在乎自己，並會為了私利不擇手段。"
+            }
+        };
+
+        let currentQuestionIndex = 0;
+        let scores = { "羅英子": 0, "邱華": 0, "夏舒": 0, "陳碩": 0, "韓之通": 0, "方麗紅": 0 };
+
+        const questionArea = document.getElementById('question-area');
+        const resultArea = document.getElementById('result-area');
+        const resultName = document.getElementById('result-name');
+        const resultDescription = document.getElementById('result-description');
+        const restartButton = document.getElementById('restart-button');
+        const shareButton = document.getElementById('share-button');
+
+        // 渲染問題和選項
+        function renderQuestion() {
+            const qData = quizData[currentQuestionIndex];
+            questionArea.innerHTML = `
+                <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <p class="text-xl md:text-2xl font-semibold mb-6">${currentQuestionIndex + 1}. ${qData.question}</p>
+                    <div id="options-container" class="space-y-4">
+                        ${qData.options.map((option, index) => `
+                            <button data-index="${index}" class="option-btn w-full text-left px-5 py-3 bg-white border border-gray-300 rounded-full transition-colors duration-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                ${option.text}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            // 綁定選項點擊事件
+            document.querySelectorAll('.option-btn').forEach(button => {
+                button.addEventListener('click', handleAnswer);
+            });
+        }
+
+        // 處理答案點擊
+        function handleAnswer(event) {
+            const optionIndex = event.target.dataset.index;
+            const selectedOption = quizData[currentQuestionIndex].options[optionIndex];
+
+            // 累加分數
+            for (const character in selectedOption.score) {
+                scores[character] += selectedOption.score[character];
+            }
+
+            // 進入下一題或顯示結果
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        // 顯示最終結果
+        function showResult() {
+            questionArea.classList.add('hidden');
+            resultArea.classList.remove('hidden');
+
+            let maxScore = -1;
+            let resultCharacter = "";
+
+            // 找出分數最高的角色
+            for (const character in scores) {
+                if (scores[character] > maxScore) {
+                    maxScore = scores[character];
+                    resultCharacter = character;
+                }
+            }
+
+            const finalResult = results[resultCharacter];
+            resultName.textContent = finalResult.name;
+            resultDescription.textContent = finalResult.description;
+        }
+
+        // 複製結果到剪貼簿
+        shareButton.addEventListener('click', () => {
+            const resultText = `我的職場人設是：${resultName.textContent}\n${resultDescription.textContent}\n\n#無所畏懼 #職場測驗`;
+            
+            // 嘗試使用新的 Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(resultText).then(() => {
+                    const originalText = shareButton.textContent;
+                    shareButton.textContent = '已複製！';
+                    setTimeout(() => {
+                        shareButton.textContent = originalText;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('複製失敗：', err);
+                    alert('複製失敗，請手動複製結果。');
+                });
+            } else {
+                // 如果 Clipboard API 不支援，使用 document.execCommand 作為備援
+                const textarea = document.createElement('textarea');
+                textarea.value = resultText;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    const originalText = shareButton.textContent;
+                    shareButton.textContent = '已複製！';
+                    setTimeout(() => {
+                        shareButton.textContent = originalText;
+                    }, 2000);
+                } catch (err) {
+                    console.error('複製失敗：', err);
+                    alert('複製失敗，請手動複製結果。');
+                } finally {
+                    document.body.removeChild(textarea);
+                }
+            }
+        });
+
+        // 重新開始測驗
+        restartButton.addEventListener('click', () => {
+            currentQuestionIndex = 0;
+            scores = { "羅英子": 0, "邱華": 0, "夏舒": 0, "陳碩": 0, "韓之通": 0, "方麗紅": 0 };
+            resultArea.classList.add('hidden');
+            questionArea.classList.remove('hidden');
+            renderQuestion();
+        });
+
+        // 初始化測驗
+        renderQuestion();
+    </script>
+</body>
+</html>
